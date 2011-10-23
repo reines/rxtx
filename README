@@ -1,0 +1,4 @@
+RXTX library with native loader support.
+
+http://rxtx.qbang.org
+Native loader based on https://github.com/vschlecht/rxtx
