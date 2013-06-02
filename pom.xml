@@ -1,9 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<groupId>com.jamierf</groupId>
 	<artifactId>rxtx</artifactId>
 	<version>1.1-SNAPSHOT</version>
 	<url>https://github.com/reines/rxtx</url>
+
+    <properties>
+        <rxtx.version>2.1.7</rxtx.version>
+        <commons-io.version>2.1</commons-io.version>
+
+        <jdk.version>1.7</jdk.version>
+    </properties>
 
 	<issueManagement>
 		<url>https://github.com/reines/rxtx/issues</url>
@@ -20,7 +28,26 @@
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.1</version>
+			<version>${commons-io.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>org.rxtx</groupId>
+            <artifactId>rxtx</artifactId>
+            <version>${rxtx.version}</version>
+        </dependency>
 	</dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>${jdk.version}</source>
+                    <target>${jdk.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

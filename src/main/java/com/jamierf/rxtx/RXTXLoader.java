@@ -1,4 +1,4 @@
-package gnu.io;
+package com.jamierf.rxtx;
 
 import java.io.File;
 import java.io.IOException;
