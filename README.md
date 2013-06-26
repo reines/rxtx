@@ -5,7 +5,7 @@ RXTX native loader, pulls in the [gnu.io RXTX library](http://rxtx.qbang.org) as
 
 [![Build Status](https://api.travis-ci.org/reines/rxtx.png)](https://travis-ci.org/reines/rxtx)
 
-RXTX Loader can be found in maven central
+RXTX Loader can be found in maven central.
 
     <dependency>
         <groupId>com.jamierf</groupId>
