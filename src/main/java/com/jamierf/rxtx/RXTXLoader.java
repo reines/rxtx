@@ -61,55 +61,41 @@ public class RXTXLoader {
 		}
 	}
 
-	private static final Random rand;
-
-	static {
-		rand = new Random();
-	}
-
 	public static void load() throws IOException {
-		final File tempDir = RXTXLoader.createTempDirectory();
+		final OperatingSystem os = OperatingSystem.fromString(System.getProperty("os.name"));
+		final Architecture arch = Architecture.fromString(System.getProperty("os.arch"));
 
-		final OperatingSystem osType = OperatingSystem.fromString(System.getProperty("os.name"));
-		final Architecture osArch = Architecture.fromString(System.getProperty("os.arch"));
-		if (osType == null || osArch == null)
-			return;
-
-		final String source = osType.toString().toLowerCase() + File.separator + osArch.toString().toLowerCase() + File.separator + osType.getLibPath();
-		final String target = tempDir.getPath() + File.separator + osType.getLibPath();
-
-		final File lib = RXTXLoader.copyResourceToFS(source, target);
-		lib.deleteOnExit();
-
-		RXTXLoader.addDirToLoadPath(tempDir.getPath());
+        RXTXLoader.load(os, arch);
 	}
+
+    public static void load(OperatingSystem os, Architecture arch) throws IOException {
+        if (os == null || arch == null)
+            throw new IOException("Unsupported operating system or architecture");
+
+		final File tempDir = RXTXLoader.createTempDirectory();
+        final InputStream source = RXTXLoader.class.getResourceAsStream(os.toString().toLowerCase() + File.separator + arch.toString().toLowerCase() + File.separator + os.getLibPath());
+        final File target = new File(tempDir, os.getLibPath());
+
+        try {
+            FileUtils.copyInputStreamToFile(source, target);
+            RXTXLoader.addDirToLoadPath(tempDir);
+        } finally {
+            source.close();
+        }
+    }
 
 	private static File createTempDirectory() {
-		final String baseTempPath = System.getProperty("java.io.tmpdir");
-		final int randomInt = 100000 + rand.nextInt(899999);
-
-		final File tempDir = new File(baseTempPath + File.separator + "rxtx" + randomInt);
+		final File tempDir = new File(FileUtils.getTempDirectory(), "rxtx-loader");
 		if (!tempDir.exists())
 			tempDir.mkdir();
-
-		tempDir.deleteOnExit();
 
 		return tempDir;
 	}
 
-	private static File copyResourceToFS(String resourcePath, String targetFsLocation) throws IOException {
-		final InputStream source = RXTXLoader.class.getResourceAsStream(resourcePath);
-		final File target = new File(targetFsLocation);
-
-		FileUtils.copyInputStreamToFile(source, target);
-
-		source.close();
-
-		return target;
-	}
-
 	// See: http://forums.sun.com/thread.jspa?threadID=707176
-	private static void addDirToLoadPath(String path) throws IOException {
+	private static void addDirToLoadPath(File dir) throws IOException {
+        final String path = dir.getPath();
+
 		try {
 			final Field field = ClassLoader.class.getDeclaredField("usr_paths");
 			final boolean accessible = field.isAccessible();

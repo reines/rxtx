@@ -4,7 +4,26 @@
 	<groupId>com.jamierf</groupId>
 	<artifactId>rxtx</artifactId>
 	<version>1.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>RXTX</name>
+    <description>RXTX native loader, pulls in the gnu.io RXTX library as a dependency. Supports Windows, Linux, OS X - x86 and x86_64.</description>
 	<url>https://github.com/reines/rxtx</url>
+
+    <licenses>
+        <license>
+            <name>GNU Lesser General Public License, version 2.1</name>
+            <url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Jamie Furness</name>
+            <email>jamie@jamierf.co.uk</email>
+            <timezone>0</timezone>
+        </developer>
+    </developers>
 
     <properties>
         <rxtx.version>2.1.7</rxtx.version>
