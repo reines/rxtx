@@ -12,7 +12,7 @@ import org.apache.commons.io.FileUtils;
 
 public class RXTXLoader {
 
-	private enum OperatingSystem {
+	public static enum OperatingSystem {
 		WINDOWS("Windows", "rxtxSerial.dll"),
 		LINUX("Linux", "librxtxSerial.so"),
 		MACOSX("Mac OS X", "librxtxSerial.jnilib");
@@ -37,9 +37,9 @@ public class RXTXLoader {
 		public String getLibPath() {
 			return libPath;
 		}
-	};
+	}
 
-	private enum Architecture {
+	public static enum Architecture {
 		X86_64("amd64", "x86_64"),
 		X86("i386", "x86");
 
