@@ -73,7 +73,7 @@ public class RXTXLoader {
             throw new IOException("Unsupported operating system or architecture");
 
 		final File tempDir = RXTXLoader.createTempDirectory();
-        final InputStream source = RXTXLoader.class.getResourceAsStream(os.toString().toLowerCase() + File.separator + arch.toString().toLowerCase() + File.separator + os.getLibPath());
+        final InputStream source = RXTXLoader.class.getResourceAsStream(os.toString().toLowerCase() + '/' + arch.toString().toLowerCase() + '/' + os.getLibPath());
         final File target = new File(tempDir, os.getLibPath());
 
         try {
