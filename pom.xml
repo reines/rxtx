@@ -35,7 +35,7 @@
         <rxtx.version>2.1.7</rxtx.version>
         <commons-io.version>2.1</commons-io.version>
 
-        <jdk.version>1.7</jdk.version>
+        <jdk.version>1.5</jdk.version>
     </properties>
 
     <issueManagement>
