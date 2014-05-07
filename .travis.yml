@@ -2,6 +2,10 @@ language: java
 jdk:
   - oraclejdk7
 
+branches:
+  only:
+    - master
+
 env:
   global:
   - secure: fuzmYxrELKtca171eLuZhH9Q3f07lYQlcYa5Cjr3UKybKVS0yPz2AilB8J6Uq+jF0/tpvL/33rFe4wRKHfL7T1HPfgozSvXHUnTTmGpGe3/zI8YKx+e8n0v/Bo3lfYULvIhn8RnpjjTV2prntzMuijCnWP96r1C36XE0r6qWJ50=
