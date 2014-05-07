@@ -8,8 +8,8 @@ branches:
 
 env:
   global:
-  - secure: fuzmYxrELKtca171eLuZhH9Q3f07lYQlcYa5Cjr3UKybKVS0yPz2AilB8J6Uq+jF0/tpvL/33rFe4wRKHfL7T1HPfgozSvXHUnTTmGpGe3/zI8YKx+e8n0v/Bo3lfYULvIhn8RnpjjTV2prntzMuijCnWP96r1C36XE0r6qWJ50=
-  - secure: noUDT4cCs75PcmdOl/sfVV/ky919as2ae6BgaE6adgwTwFU5/rmmpJpiFnnuwuf5xuTPCiVrWIjl24zE0DVBvrKdUCVkcyzV5xsmKQkDOlyDQ8PjLCEODdoQHriI+V2hpZFkzt08OlmKXy/9Z4nJ663Xw/z0Pp4oOrkwDnmv7Gs=
+    - secure: "0BGkXRYeLj1p9v+kcINyjSlDAPUtXFQmBbNM8B7flz/nJ9A9FoDBQVlMJ8/R1zcKmj+vPGNXRVT+rEdTiV8VlhVXAz392MHENvk//5nRynI2DuagGB4/nMf13RsHXm1mbRfR1mGZ/ZJFxB4lxZuKH5aEM3DO97ZxDEQIAv0KHdQ="
+    - secure: "yuyjzSnXLaBJbEiGzYpNxLKbHlmupwEqhMmm6YGmnxhXc5ZXPq3WVlgyEhFhIYhCvdl7ShIfkw+lPseA/gax0jFJKEPCbZoJRX/WsgAKO30dzL53BdCZasAMf5Sj77/jEUpNmzOjupNrTKQ0cuX+bNALi8iizc/9Zm/2XR50+AY="
 
 after_success:
   - mvn clean deploy --settings settings.xml
