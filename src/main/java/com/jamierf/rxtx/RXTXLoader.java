@@ -65,26 +65,31 @@ public class RXTXLoader {
         ARMv5("ARMv5"), ARMv6("ARMv6"), ARMv7("ARMv7"), ARM("arm");
 
         public static Architecture get() {
-            try {
-                // Attempt to read from /proc/cpuinfo if it exists
-                if (CPU_INFO_FILE.exists()) {
-                    final String cpuInfo = FileUtils.readFileToString(CPU_INFO_FILE);
-                    final Matcher matcher = CPU_INFO_MODEL_INFO.matcher(cpuInfo);
-                    if (matcher.find()) {
-                        final String modelInfo = matcher.group(1).trim();
-                        return fromString(modelInfo);
+            final String name = System.getProperty("os.arch");
+            final Architecture arch = fromString(name);
+
+            // For ARM we need to try be more specific if we can, which version?
+            if (arch == Architecture.ARM) {
+                try {
+                    // Attempt to read from /proc/cpuinfo if it exists (only on *nix)
+                    if (CPU_INFO_FILE.exists()) {
+                        final String cpuInfo = FileUtils.readFileToString(CPU_INFO_FILE);
+                        final Matcher matcher = CPU_INFO_MODEL_INFO.matcher(cpuInfo);
+                        if (matcher.find()) {
+                            final String modelInfo = matcher.group(1).trim();
+                            return fromString(modelInfo);
+                        }
                     }
                 }
-            }
-            catch (IOException e) {
-                LOG.warn("Failed to read {}", CPU_INFO_FILE.getAbsolutePath());
-            }
-            catch (UnsupportedArchitectureException e) {
-                LOG.debug("Unable to find architecture from {}", CPU_INFO_FILE.getName());
+                catch (IOException e) {
+                    LOG.warn("Failed to read {}", CPU_INFO_FILE.getAbsolutePath());
+                }
+                catch (UnsupportedArchitectureException e) {
+                    LOG.debug("Unable to find architecture from {}", CPU_INFO_FILE.getName());
+                }
             }
 
-            final String name = System.getProperty("os.arch");
-            return fromString(name);
+            return arch;
         }
 
         public static Architecture fromString(final String name) {
