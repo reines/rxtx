@@ -34,6 +34,7 @@
     <properties>
         <rxtx.version>2.1.7</rxtx.version>
         <commons-io.version>2.1</commons-io.version>
+        <slf4j.version>1.7.7</slf4j.version>
 
         <jdk.version>1.5</jdk.version>
     </properties>
@@ -60,6 +61,11 @@
             <artifactId>rxtx</artifactId>
             <version>${rxtx.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -72,6 +78,24 @@
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>1.3.1</version>
+                <executions>
+                    <execution>
+                        <id>enforce</id>
+                        <configuration>
+                            <rules>
+                                <DependencyConvergence />
+                            </rules>
+                        </configuration>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
