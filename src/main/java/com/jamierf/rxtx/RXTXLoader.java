@@ -1,5 +1,6 @@
 package com.jamierf.rxtx;
 
+import gnu.io.RXTXVersion;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,7 +77,10 @@ public class RXTXLoader {
                 }
             }
             catch (IOException e) {
-                LOG.warn("Failed to read {}", CPU_INFO_FILE);
+                LOG.warn("Failed to read {}", CPU_INFO_FILE.getAbsolutePath());
+            }
+            catch (UnsupportedArchitectureException e) {
+                LOG.debug("Unable to find architecture from {}", CPU_INFO_FILE.getName());
             }
 
             final String name = System.getProperty("os.arch");
@@ -128,7 +132,8 @@ public class RXTXLoader {
             source.close();
         }
 
-        LOG.info("Loaded RXTX native library for {} {}", arch, os);
+        final String version = RXTXVersion.nativeGetVersion();
+        LOG.info("Loaded RXTX native library {} for {} {}", version, arch, os);
     }
 
     private static InputStream openResource(final OperatingSystem os, final Architecture arch) throws IOException {
