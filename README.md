@@ -9,12 +9,22 @@ RXTX native loader, pulls in the [gnu.io RXTX library](http://rxtx.qbang.org) as
 
 RXTX Loader can be found in maven central.
 
-    <dependency>
-        <groupId>com.jamierf</groupId>
-        <artifactId>rxtx</artifactId>
-        <version>...</version>
-    </dependency>
+## Installation
 
-### Usage
+```xml
+<dependency>
+    <groupId>com.jamierf</groupId>
+    <artifactId>rxtx</artifactId>
+    <version>...</version>
+</dependency>
+```
 
-    RXTXLoader.load();
+## Usage
+
+```java
+RXTXLoader.load(); // Automatic detection of OS and Architecture
+```
+or
+```java
+RXTXLoader.load(OperatingSystem.LINUX, Architecture.ARMv6);
+```
