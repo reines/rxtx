@@ -28,3 +28,7 @@ or
 ```java
 RXTXLoader.load(OperatingSystem.LINUX, Architecture.ARMv6);
 ```
+
+## License
+
+Released under the [Apache 2.0 License](LICENSE).
