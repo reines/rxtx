@@ -1,4 +1,4 @@
-package com.jamierf.rxtx;
+package com.jamierf.rxtx.error;
 
 public class UnsupportedArchitectureException extends RuntimeException {
 

@@ -1,5 +1,7 @@
 package com.jamierf.rxtx;
 
+import com.jamierf.rxtx.model.Architecture;
+import com.jamierf.rxtx.model.OperatingSystem;
 import gnu.io.RXTXVersion;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -12,116 +14,17 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class RXTXLoader {
 
     private static final Logger LOG = LoggerFactory.getLogger(RXTXLoader.class);
-    private static final Pattern CPU_INFO_MODEL_INFO = Pattern.compile("model name\\s+:\\s+(.*)");
-    private static final File CPU_INFO_FILE = new File("/proc/cpuinfo");
-
-    public static enum OperatingSystem {
-        WINDOWS("Windows", "rxtxSerial.dll"),
-        LINUX("Linux", "librxtxSerial.so"),
-        MAC_OSX("Mac OS X", "librxtxSerial.jnilib");
-
-        public static OperatingSystem get() {
-            final String name = System.getProperty("os.name");
-            return fromString(name);
-        }
-
-        public static OperatingSystem fromString(final String name) {
-            for (final OperatingSystem os : OperatingSystem.values()) {
-                if (name.toLowerCase().contains(os.key.toLowerCase())) {
-                    LOG.debug("Detected OS as {} ({})", os, name);
-                    return os;
-                }
-            }
-
-            throw new UnsupportedOperatingSystemException(name);
-        }
-
-        private final String key;
-        private final String libPath;
-
-        private OperatingSystem(final String key, final String libPath) {
-            this.key = key;
-            this.libPath = libPath;
-        }
-
-        public String getName() {
-            return name().toLowerCase();
-        }
-
-        public String getLibPath() {
-            return libPath;
-        }
-    }
-
-    public static enum Architecture {
-        X86_64("amd64", "x86_64"),
-        X86("i386", "x86"),
-        ARMv5("ARMv5"), ARMv6("ARMv6"), ARMv7("ARMv7"), ARM("arm");
-
-        public static Architecture get() {
-            final String name = System.getProperty("os.arch");
-            final Architecture arch = fromString(name);
-
-            // For ARM we need to try be more specific if we can, which version?
-            if (arch == Architecture.ARM) {
-                try {
-                    // Attempt to read from /proc/cpuinfo if it exists (only on *nix)
-                    if (CPU_INFO_FILE.exists()) {
-                        final String cpuInfo = FileUtils.readFileToString(CPU_INFO_FILE);
-                        final Matcher matcher = CPU_INFO_MODEL_INFO.matcher(cpuInfo);
-                        if (matcher.find()) {
-                            final String modelInfo = matcher.group(1).trim();
-                            return fromString(modelInfo);
-                        }
-                    }
-                }
-                catch (IOException e) {
-                    LOG.warn("Failed to read {}", CPU_INFO_FILE.getAbsolutePath());
-                }
-                catch (UnsupportedArchitectureException e) {
-                    LOG.debug("Unable to find architecture from {}", CPU_INFO_FILE.getName());
-                }
-            }
-
-            return arch;
-        }
-
-        public static Architecture fromString(final String name) {
-            for (final Architecture arch : Architecture.values()) {
-                for (final String key : arch.keys) {
-                    if (name.toLowerCase().contains(key.toLowerCase())) {
-                        LOG.debug("Detected OS as {} ({})", arch, name);
-                        return arch;
-                    }
-                }
-            }
-
-            throw new UnsupportedArchitectureException(name);
-        }
-
-        private final String[] keys;
-
-        private Architecture(final String... keys) {
-            this.keys = keys;
-        }
-
-        public String getName() {
-            return name().toLowerCase();
-        }
-    }
 
     public static void load() throws IOException {
         RXTXLoader.load(OperatingSystem.get(), Architecture.get());
     }
 
     public static void load(final OperatingSystem os, final Architecture arch) throws IOException {
-        final File tempDir = RXTXLoader.createTempDirectory();
+        final File tempDir = createTempDirectory();
         final InputStream source = openResource(os, arch);
         if (source == null) {
             throw new IllegalStateException(String.format("Unable to find resource for %s %s", arch, os));
@@ -132,7 +35,7 @@ public class RXTXLoader {
 
         try {
             FileUtils.copyInputStreamToFile(source, target);
-            RXTXLoader.addDirToLoadPath(tempDir);
+            addDirToLoadPath(tempDir);
         } finally {
             source.close();
         }
