@@ -25,26 +25,35 @@ public enum Architecture {
 
         // For ARM we need to try be more specific if we can, which version?
         if (arch == Architecture.ARM) {
-            try {
-                // Attempt to read from /proc/cpuinfo if it exists (only on *nix)
-                if (CPU_INFO_FILE.exists()) {
-                    final String cpuInfo = FileUtils.readFileToString(CPU_INFO_FILE);
-                    final Matcher matcher = CPU_INFO_MODEL_INFO.matcher(cpuInfo);
-                    if (matcher.find()) {
-                        final String modelInfo = matcher.group(1).trim();
-                        return fromString(modelInfo);
-                    }
-                }
-            }
-            catch (IOException e) {
-                LOG.warn("Failed to read {}", CPU_INFO_FILE.getAbsolutePath());
-            }
-            catch (UnsupportedArchitectureException e) {
-                LOG.debug("Unable to find architecture from {}", CPU_INFO_FILE.getName());
+            final Architecture detailed = getFromCpuInfo();
+            if (detailed != null) {
+                return detailed;
             }
         }
 
         return arch;
+    }
+
+    private static Architecture getFromCpuInfo() {
+        try {
+            // Attempt to read from /proc/cpuinfo if it exists (only on *nix)
+            if (CPU_INFO_FILE.exists()) {
+                final String cpuInfo = FileUtils.readFileToString(CPU_INFO_FILE);
+                final Matcher matcher = CPU_INFO_MODEL_INFO.matcher(cpuInfo);
+                if (matcher.find()) {
+                    final String modelInfo = matcher.group(1).trim();
+                    return fromString(modelInfo);
+                }
+            }
+        }
+        catch (IOException e) {
+            LOG.warn("Failed to read {}", CPU_INFO_FILE.getAbsolutePath());
+        }
+        catch (UnsupportedArchitectureException e) {
+            LOG.debug("Unable to find architecture from {}", CPU_INFO_FILE.getName());
+        }
+
+        return null;
     }
 
     public static Architecture fromString(final String name) {

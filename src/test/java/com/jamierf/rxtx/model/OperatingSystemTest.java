@@ -4,22 +4,36 @@ import com.jamierf.rxtx.error.UnsupportedOperatingSystemException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class OperatingSystemTest {
 
-    @Test(expected = UnsupportedOperatingSystemException.class)
-    public void testUnsupported() {
-        OperatingSystem.fromString("unsupported");
+    private static final String OPERATING_SYSTEM_NAME_SYSTEM_PROPERTY = "os.name";
+
+    private static void mockOperatingSystem(final String name) {
+        System.setProperty(OPERATING_SYSTEM_NAME_SYSTEM_PROPERTY, name);
     }
 
     @Test(expected = UnsupportedOperatingSystemException.class)
     public void testEmpty() {
-        OperatingSystem.fromString("");
+        mockOperatingSystem("");
+        OperatingSystem.get();
     }
 
     @Test(expected = UnsupportedOperatingSystemException.class)
     public void testNull() {
         OperatingSystem.fromString(null);
+    }
+
+    @Test
+    public void testExceptionCapturesOperatingSystem() {
+        try {
+            OperatingSystem.fromString("turtles");
+            fail("Expected UnsupportedOperatingSystemException");
+        }
+        catch (UnsupportedOperatingSystemException e) {
+            assertEquals("turtles", e.getOperatingSystem());
+        }
     }
 
     @Test
@@ -29,26 +43,36 @@ public class OperatingSystemTest {
 
     @Test
     public void testLinux() {
-        assertEquals(OperatingSystem.LINUX, OperatingSystem.fromString("Linux 3.12.28+ #709 PREEMPT"));
+        mockOperatingSystem("Linux 3.12.28+ #709 PREEMPT");
+        assertEquals(OperatingSystem.LINUX, OperatingSystem.get());
     }
 
     @Test
     public void testExactMatchWindows() {
-        assertEquals(OperatingSystem.WINDOWS, OperatingSystem.fromString("Windows"));
+        mockOperatingSystem("Windows");
+        assertEquals(OperatingSystem.WINDOWS, OperatingSystem.get());
     }
 
     @Test
     public void testWindows() {
-        assertEquals(OperatingSystem.WINDOWS, OperatingSystem.fromString("Windows 7"));
+        mockOperatingSystem("Windows 7");
+        assertEquals(OperatingSystem.WINDOWS, OperatingSystem.get());
     }
 
     @Test
     public void testExactMatchMac() {
-        assertEquals(OperatingSystem.MAC_OSX, OperatingSystem.fromString("Mac OS X"));
+        mockOperatingSystem("Mac OS X");
+        assertEquals(OperatingSystem.MAC_OSX, OperatingSystem.get());
     }
 
     @Test
     public void testMac() {
-        assertEquals(OperatingSystem.MAC_OSX, OperatingSystem.fromString("Mac OS X 10.7.4"));
+        mockOperatingSystem("Mac OS X 10.7.4");
+        assertEquals(OperatingSystem.MAC_OSX, OperatingSystem.get());
+    }
+
+    @Test
+    public void testNameIsLowerCase() {
+        assertEquals("windows", OperatingSystem.WINDOWS.getName());
     }
 }
