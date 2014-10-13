@@ -4,6 +4,7 @@ import com.jamierf.rxtx.error.UnsupportedOperatingSystemException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class OperatingSystemTest {
@@ -74,5 +75,20 @@ public class OperatingSystemTest {
     @Test
     public void testNameIsLowerCase() {
         assertEquals("windows", OperatingSystem.WINDOWS.getName());
+    }
+
+    @Test
+    public void testWindowsLibExtension() {
+        assertTrue(OperatingSystem.WINDOWS.getLibPath().endsWith(".dll"));
+    }
+
+    @Test
+    public void testMacLibExtension() {
+        assertTrue(OperatingSystem.MAC_OSX.getLibPath().endsWith(".jnilib"));
+    }
+
+    @Test
+    public void testLinuxLibExtension() {
+        assertTrue(OperatingSystem.LINUX.getLibPath().endsWith(".so"));
     }
 }
