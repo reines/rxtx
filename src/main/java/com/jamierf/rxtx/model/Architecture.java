@@ -18,39 +18,47 @@ public enum Architecture {
     private static final Logger LOG = LoggerFactory.getLogger(Architecture.class);
     private static final Pattern CPU_INFO_MODEL_INFO = Pattern.compile("model name\\s+:\\s+(.*)");
     private static final File CPU_INFO_FILE = new File("/proc/cpuinfo");
+    public static final String OS_ARCHITECTURE_SYSTEM_PROPERTY = "os.arch";
 
     public static Architecture get() {
-        final String name = System.getProperty("os.arch");
+        final String name = System.getProperty(OS_ARCHITECTURE_SYSTEM_PROPERTY);
         final Architecture arch = fromString(name);
 
         // For ARM we need to try be more specific if we can, which version?
         if (arch == Architecture.ARM) {
-            final Architecture detailed = getFromCpuInfo();
-            if (detailed != null) {
-                return detailed;
+            try {
+                final Architecture detailed = getFromCpuInfo(CPU_INFO_FILE);
+                if (detailed != null) {
+                    return detailed;
+                }
+            }
+            catch (UnsupportedArchitectureException e) {
+                LOG.debug("Unable to find supported architecture from {}", CPU_INFO_FILE.getName());
             }
         }
 
         return arch;
     }
 
-    private static Architecture getFromCpuInfo() {
+    protected static Architecture getFromCpuInfo(final File file) {
         try {
-            // Attempt to read from /proc/cpuinfo if it exists (only on *nix)
-            if (CPU_INFO_FILE.exists()) {
-                final String cpuInfo = FileUtils.readFileToString(CPU_INFO_FILE);
-                final Matcher matcher = CPU_INFO_MODEL_INFO.matcher(cpuInfo);
-                if (matcher.find()) {
-                    final String modelInfo = matcher.group(1).trim();
-                    return fromString(modelInfo);
-                }
+            if (file.exists()) {
+                final String info = FileUtils.readFileToString(file);
+                return getFromCpuInfo(info);
             }
         }
         catch (IOException e) {
-            LOG.warn("Failed to read {}", CPU_INFO_FILE.getAbsolutePath());
+            LOG.warn("Failed to read {}", file.getAbsolutePath());
         }
-        catch (UnsupportedArchitectureException e) {
-            LOG.debug("Unable to find architecture from {}", CPU_INFO_FILE.getName());
+
+        return null;
+    }
+
+    protected static Architecture getFromCpuInfo(final String info) {
+        final Matcher matcher = CPU_INFO_MODEL_INFO.matcher(info);
+        if (matcher.find()) {
+            final String modelInfo = matcher.group(1).trim();
+            return fromString(modelInfo);
         }
 
         return null;

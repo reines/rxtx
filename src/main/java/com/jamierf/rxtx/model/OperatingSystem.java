@@ -10,9 +10,10 @@ public enum OperatingSystem {
     MAC_OSX("Mac OS X", "librxtxSerial.jnilib");
 
     private static final Logger LOG = LoggerFactory.getLogger(OperatingSystem.class);
+    public static final String OS_NAME_SYSTEM_PROPERTY = "os.name";
 
     public static OperatingSystem get() {
-        final String name = System.getProperty("os.name");
+        final String name = System.getProperty(OS_NAME_SYSTEM_PROPERTY);
         return fromString(name);
     }
 

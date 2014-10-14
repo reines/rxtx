@@ -9,10 +9,8 @@ import static org.junit.Assert.fail;
 
 public class OperatingSystemTest {
 
-    private static final String OPERATING_SYSTEM_NAME_SYSTEM_PROPERTY = "os.name";
-
     private static void mockOperatingSystem(final String name) {
-        System.setProperty(OPERATING_SYSTEM_NAME_SYSTEM_PROPERTY, name);
+        System.setProperty(OperatingSystem.OS_NAME_SYSTEM_PROPERTY, name);
     }
 
     @Test(expected = UnsupportedOperatingSystemException.class)
