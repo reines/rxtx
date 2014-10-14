@@ -27,10 +27,10 @@ public class RXTXLoader {
             throw new IllegalStateException(String.format("Unable to find resource for %s %s", arch, os));
         }
 
-        final File target = new File(tempDir, os.getLibPath());
-        LOG.debug("Loading RXTX library for {} {}", arch, os);
-
         try {
+            final File target = new File(tempDir, os.getLibPath());
+            LOG.debug("Loading RXTX library for {} {}", arch, os);
+
             FileUtils.copyInputStreamToFile(source, target);
             SystemLoadPath.getInstance().add(tempDir.getAbsolutePath());
         } catch (NoSuchFieldException e) {
@@ -43,13 +43,13 @@ public class RXTXLoader {
         LOG.info("Loaded RXTX native library {} for {} {}", version, arch, os);
     }
 
-    private static InputStream openResource(final OperatingSystem os, final Architecture arch) throws IOException {
+    protected static InputStream openResource(final OperatingSystem os, final Architecture arch) throws IOException {
         final String path = String.format("%s/%s/%s", os.getName(), arch.getName(), os.getLibPath());
         LOG.trace("Loading native library from {}", path);
         return RXTXLoader.class.getResourceAsStream(path);
     }
 
-    private static File createTempDirectory() {
+    protected static File createTempDirectory() {
         final File tempDir = new File(FileUtils.getTempDirectory(), "rxtx-loader");
         if (!tempDir.exists()) {
             tempDir.mkdir();

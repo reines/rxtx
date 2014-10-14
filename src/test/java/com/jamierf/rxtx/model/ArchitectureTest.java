@@ -2,6 +2,7 @@ package com.jamierf.rxtx.model;
 
 import com.google.common.io.Resources;
 import com.jamierf.rxtx.error.UnsupportedArchitectureException;
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 import java.io.File;
@@ -9,9 +10,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class ArchitectureTest {
 
@@ -67,8 +66,13 @@ public class ArchitectureTest {
     }
 
     @Test
-    public void getFromMissingFile() {
+    public void testGetFromCpuInfoFileWhenNoSuchFile() {
         assertNull(Architecture.getFromCpuInfo(new File("no_such_file")));
+    }
+
+    @Test
+    public void testGetFromCpuInfoFileWhenDirectory() {
+        assertNull(Architecture.getFromCpuInfo(FileUtils.getTempDirectory()));
     }
 
     @Test
