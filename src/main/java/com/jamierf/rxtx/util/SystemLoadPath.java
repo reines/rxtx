@@ -3,37 +3,46 @@ package com.jamierf.rxtx.util;
 import java.lang.reflect.Field;
 import java.util.*;
 
-public abstract class SystemLoadPath {
+public class SystemLoadPath {
 
-    private static Field getField() throws NoSuchFieldException {
-        final Field field = ClassLoader.class.getDeclaredField("usr_paths");
+    private static SystemLoadPath instance;
+
+    public static SystemLoadPath getInstance() throws NoSuchFieldException {
+        if (instance == null) {
+            instance = new SystemLoadPath(ClassLoader.class, "usr_paths");
+        }
+
+        return instance;
+    }
+
+    private final Field field;
+
+    protected SystemLoadPath(final Class<?> clazz, final String name) throws NoSuchFieldException {
+        field = clazz.getDeclaredField(name);
         field.setAccessible(true);
-        return field;
     }
 
     // See: http://forums.sun.com/thread.jspa?threadID=707176
-    public static void add(final String path) {
+    public void add(final String path) {
         final Set<String> paths = new LinkedHashSet<String>();
         paths.addAll(get());
         paths.add(path);
         set(paths);
     }
 
-    public static void set(final Collection<String> paths) {
+    public void set(final Collection<String> paths) {
         try {
-            getField().set(null, paths.toArray(new String[paths.size()]));
+            field.set(null, paths.toArray(new String[paths.size()]));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static List<String> get() {
+    public List<String> get() {
         try {
-            return Arrays.asList((String[]) getField().get(null));
+            return Arrays.asList((String[]) field.get(null));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
-
-    private SystemLoadPath() {}
 }

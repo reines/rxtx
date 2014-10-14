@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-public abstract class RXTXLoader {
+public class RXTXLoader {
 
     private static final Logger LOG = LoggerFactory.getLogger(RXTXLoader.class);
 
@@ -32,7 +32,9 @@ public abstract class RXTXLoader {
 
         try {
             FileUtils.copyInputStreamToFile(source, target);
-            SystemLoadPath.add(tempDir.getAbsolutePath());
+            SystemLoadPath.getInstance().add(tempDir.getAbsolutePath());
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
         } finally {
             source.close();
         }
@@ -55,6 +57,4 @@ public abstract class RXTXLoader {
 
         return tempDir;
     }
-
-    private RXTXLoader() {}
 }
