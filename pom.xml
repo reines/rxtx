@@ -33,9 +33,9 @@
 
     <properties>
         <rxtx.version>2.1.7</rxtx.version>
-        <commons-io.version>2.1</commons-io.version>
+        <commons-io.version>2.4</commons-io.version>
         <slf4j.version>1.7.7</slf4j.version>
-        <junit.version>4.11</junit.version>
+        <junit.version>4.12-beta-2</junit.version>
         <guava.version>18.0</guava.version>
 
         <jdk.version>1.5</jdk.version>
